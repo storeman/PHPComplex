@@ -44,7 +44,7 @@ $replace = [
 ];
 array_splice($lines, 3, -2, $replace);
 
-$lines = array_merge($lines, [explode(PHP_EOL, <<<'PHP'
+$lines = array_merge($lines, explode(PHP_EOL, <<<'PHP'
     public static function __callStatic($functionName, $arguments)
     {
         $functionName = strtolower(str_replace('_', '', $functionName));
@@ -55,7 +55,7 @@ $lines = array_merge($lines, [explode(PHP_EOL, <<<'PHP'
         throw new Exception('Complex Function or Operation does not exist');
     }
 PHP
-)]);
+));
 
 $newCode =  implode($reflector->getLineEnding(), $lines)
     . PHP_EOL . PHP_EOL
@@ -64,4 +64,7 @@ $newCode =  implode($reflector->getLineEnding(), $lines)
 file_put_contents($mainFile, str_replace($callMethod->getSourceCode(), $newCode, file_get_contents($mainFile)));
 
 $functionFile = dirname($mainFile) . '/functions.php';
-file_put_contents($functionFile, implode(PHP_EOL . PHP_EOL, $functions));
+file_put_contents($functionFile, '<?php
+namespace Complex;
+
+' . implode(PHP_EOL . PHP_EOL, $functions));
